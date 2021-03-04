@@ -20,6 +20,7 @@ function HomeScreen({ navigation }) {
         <View style = {styles.MainContainer}>
             <Icon name="cards-outline" size={200} color="orange" />
             <Text style={{fontSize: 30, color: "orange"}}>UdaciCards</Text>
+            <Text style={{fontSize: 10, color: "orange"}}> </Text>
             <Icon.Button style={styles.btnContainer}
                          backgroundColor="orange"
                          onPress={() => navigation.navigate('TestScreen')}>
@@ -39,9 +40,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffc93c',
     },
     btnContainer: {
+        justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
         color: "orange",
-        fontSize: 70
+        fontSize: 70,
+        width: 210,
     }
 });

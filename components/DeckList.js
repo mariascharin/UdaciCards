@@ -15,6 +15,7 @@ function DeckList({ route, navigation }) {
                              onPress={() => navigation.navigate('TestScreen')}>
                     {deckName}
                 </Icon.Button>
+                <Text style={{fontSize: 3, color: "orange"}}> </Text>
             </View>
         )
     }
@@ -23,6 +24,7 @@ function DeckList({ route, navigation }) {
         <View>
             <Icon name="cards-outline" size={200} color="orange"/>
             <Text style={{fontSize: 30, color: "orange"}}>Select Deck:</Text>
+            <Text style={{fontSize: 10, color: "orange"}}> </Text>
 
             {deckTitles.map((thisTitle) => (
                 cardButton(thisTitle)

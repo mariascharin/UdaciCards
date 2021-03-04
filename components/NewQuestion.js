@@ -12,7 +12,8 @@ class NewQuestion extends Component  {
 
 
     render(){
-        const { navigation } = this.props;
+        const { navigation, route } = this.props;
+        const { deckName, deck } = route.params;
         const setText = (questionAnswer, text) => {
             this.setState(() => ({
                 [questionAnswer]: text,
@@ -22,17 +23,17 @@ class NewQuestion extends Component  {
         return (
             <View style = {styles.MainContainer}>
                 <View style={{flex: 2, justifyContent: 'flex-end'}}>
-                    <Text style={{fontSize: 50, color: "orange"}}>New Deck</Text>
+                    <Text style={{fontSize: 50, color: "orange"}}>{deckName}</Text>
+                    <Text style={{fontSize: 20, color: "orange"}}> </Text>
                 </View>
                 <View style={{flex: 1, justifyContent: 'flex-start'}}>
-
                     <TextInput
                         style={{height: 40}}
                         placeholder="Type your question here!"
                         onChangeText={text => setText('question', text)}
                         value={this.state.question}
                     />
-
+                    <Text style={{fontSize: 10, color: "orange"}}> </Text>
                     <TextInput
                         style={{height: 40}}
                         placeholder="Type your answer here!"

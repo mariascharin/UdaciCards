@@ -1,8 +1,9 @@
 import React from 'react';
 import {Button, StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {loadStartDecks} from "../utils/api";
+import {resetDecks, loadStartDecks, fetchDecks, fetchDeck, saveDeckTitle, addCardToDeck, deleteDeck} from "../utils/api";
 
+// TEST SCREENS:
 // HomeScreen
 // DeckList
 // NewDeck
@@ -10,6 +11,15 @@ import {loadStartDecks} from "../utils/api";
 // NewQuestion
 // Quiz
 // ResultsCard
+// TEST API FUNCTIONS:
+// fetchDecks - to make sure there is no data for DECK_STORAGE_KEY = 'UdaciCards:decks'
+// loadStartDecks
+// fetchDecks
+// fetchDeck(deckName)
+// saveDeckTitle(deckName)
+// addCardToDeck(deckName, newQuestion)
+
+
 
 function TestScreen({ navigation }) {
 
@@ -56,6 +66,91 @@ function TestScreen({ navigation }) {
         unanswered: 1,
     }
 
+    function testResetDecks() {
+        resetDecks()
+            .then((returnItem) => {
+                if (!returnItem) {
+                    console.log('testResetDecks succeeded');
+                } else {
+                    console.log('testResetDecks not working as expected');
+                }
+            })
+            .catch((e) => {
+                console.log('error: ', e)
+            })
+    }
+
+    function testStartPosition() {
+        fetchDecks()
+            .then((returnItem) => {
+                console.log('testStartPosition all decks:', returnItem);
+            })
+            .catch((e) => {
+                console.log('error: ', e)
+            })
+    }
+
+    function testLoadStartDecks() {
+        loadStartDecks()
+            .then((returnItem) => {
+                console.log('testLoadStartDecks all decks:', returnItem);
+            })
+            .catch((e) => {
+                console.log('error: ', e)
+            })
+    }
+
+    function testFetchDecks() {
+        fetchDecks()
+            .then((returnItem) => {
+                console.log('testFetchDecks all decks:', returnItem);
+            })
+            .catch((e) => {
+                console.log('error: ', e)
+            })
+    }
+
+    function testFetchDeck(deckName) {
+        fetchDeck(deckName)
+            .then((returnItem) => {
+                console.log('testFetchDeck all decks:', returnItem);
+            })
+            .catch((e) => {
+                console.log('error: ', e)
+            })
+    }
+
+    function testSaveDeckTitle(addedDeckName) {
+        saveDeckTitle(addedDeckName)
+            .then((returnItem) => {
+                console.log('testSaveDeckTitle returnItem:', returnItem);
+                console.log('testSaveDeckTitle returnItem keys:', Object.keys(returnItem));
+            })
+            .catch((e) => {
+                console.log('error: ', e)
+            })
+    }
+
+    function testAddCardToDeck(deckName, addedQuestion) {
+        addCardToDeck(deckName, addedQuestion)
+            .then((returnItem) => {
+                console.log('testAddCardToDeck returnItem:', returnItem);
+            })
+            .catch((e) => {
+                console.log('error: ', e)
+            })
+    }
+
+    function testDeleteDeck(deckName) {
+        deleteDeck(deckName)
+            .then((returnItem) => {
+                console.log('testDeleteDeck returnItem:', returnItem);
+            })
+            .catch((e) => {
+                console.log('error: ', e)
+            })
+    }
+
     return (
         <View style = {styles.MainContainer}>
             <Button
@@ -79,7 +174,11 @@ function TestScreen({ navigation }) {
                 title="Check IndividualDeck"
             />
             <Button
-                onPress={() => navigation.navigate('NewQuestion')}
+                onPress={() => navigation.navigate('NewQuestion',
+                    {
+                        deckName,
+                        deck,
+                    })}
                 title="Check NewQuestion"
             />
             <Button
@@ -93,6 +192,41 @@ function TestScreen({ navigation }) {
             <Button
                 onPress={() => navigation.navigate('ResultsCard', {result})}
                 title="Check ResultsCard"
+            />
+            <Button
+                onPress={() => testResetDecks()}
+                title="function: testResetDecks"
+            />
+            <Button
+                onPress={() => testStartPosition()}
+                title="function: testStartPosition"
+            />
+            <Button
+                onPress={() => testLoadStartDecks()}
+                title="function: testLoadStartDecks"
+            />
+            <Button
+                onPress={() => testFetchDecks()}
+                title="function: testFetchDecks"
+            />
+            <Button
+                onPress={() => testFetchDeck("React")}
+                title="function: testFetchDeck"
+            />
+            <Button
+                onPress={() => testSaveDeckTitle("CapitalVillages")}
+                title="function: testSaveDeckTitle"
+            />
+            <Button
+                onPress={() => testAddCardToDeck("CapitalVillages", {
+                    question: "What is the capital city of Sweden?",
+                    answer: "Stockholm"
+                })}
+                title="function: testAddCardToDeck"
+            />
+            <Button
+                onPress={() => testDeleteDeck("CapitalVillages")}
+                title="function: testDeleteDeck"
             />
         </View>
     );
