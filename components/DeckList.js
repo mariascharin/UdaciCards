@@ -1,10 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { orange, white } from '../utils/colors';
+import {loadStartDecks} from "../utils/api";
 
-function DeckList({ route, navigation }) {
-    const { allDecks } = route.params;
+function DeckList({ navigation }) {
+
+    const [allDecks, setAllDecks] = useState({});
+        loadStartDecks()
+            .then((returnItem) => {
+                setAllDecks(returnItem);
+            })
+            .catch((e) => {
+                console.log('Error in DeckList: ', e)
+            })
+
+    //const { allDecks } = route.params;
     const deckTitles = Object.keys(allDecks);
 
     const cardButton = (deckName) => {

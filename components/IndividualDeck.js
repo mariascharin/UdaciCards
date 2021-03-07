@@ -10,7 +10,7 @@ function IndividualDeck({ route, navigation }) {
     const deleteDeckAction = (deckName) => {
         deleteDeck(deckName)
             .then((allDecks) => {
-                navigation.navigate('DeckList', {allDecks});
+                navigation.navigate('DeckList');
             })
             .catch((e) => {
                 console.log('Error in deleteDeckAction: ', e)

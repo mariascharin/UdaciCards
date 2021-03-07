@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Button, StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { red, orange, white } from '../utils/colors';
+import {fetchDecks} from "../utils/api";
 
 class Quiz extends Component  {
 
@@ -127,7 +128,7 @@ class Quiz extends Component  {
                     <View style = {styles.BottomButtonContainer}>
                         <Icon.Button style={styles.btnContainer}
                                      backgroundColor="orange"
-                                     onPress={() => navigation.navigate('HomeScreen')}>
+                                     onPress={() => navigation.navigate('DeckList')}>
                             Back to Start Screen
                         </Icon.Button>
                         <Icon.Button style={styles.btnContainer}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from "./components/HomeScreen";
@@ -7,13 +7,14 @@ import NewDeck from './components/NewDeck';
 import IndividualDeck from './components/IndividualDeck';
 import NewQuestion from './components/NewQuestion';
 import Quiz from './components/Quiz';
+import {loadStartDecks} from "./utils/api";
 
 const Stack = createStackNavigator();
 
 function MyStack() {
+
     return (
         <Stack.Navigator>
-            <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="DeckList" component={DeckList} />
             <Stack.Screen name="NewDeck" component={NewDeck} />
             <Stack.Screen name="IndividualDeck" component={IndividualDeck} />
