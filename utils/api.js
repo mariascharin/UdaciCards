@@ -11,54 +11,47 @@ export async function resetDecks() {
         return currentDecks;
 
     } catch(e) {
-        console.log('error: ', e)
+        console.log('Error in resetDecks: ', e)
     }
 }
 
 export async function loadStartDecks() {
     try {
-        let currentDecks = await AsyncStorage.getItem(DECK_STORAGE_KEY)
+        let currentDecks = JSON.parse(await AsyncStorage.getItem(DECK_STORAGE_KEY));
         if (!currentDecks) {
-            console.log('in if clause loadStartDecks startDecks: ', startDecks);
-            await AsyncStorage.setItem(DECK_STORAGE_KEY,  JSON.stringify(startDecks))
+            console.log('No decks discovered. Loading start decks.');
+            await AsyncStorage.setItem(DECK_STORAGE_KEY,  JSON.stringify(startDecks));
+            return(startDecks);
         }
-        return(startDecks);
+        return(currentDecks);
     } catch(e) {
-        console.log('error: ', e)
+        console.log('Error in loadStartDecks: ', e)
     }
 }
 
 export async function fetchDecks() {
     try {
         const currentDecks = await AsyncStorage.getItem(DECK_STORAGE_KEY)
-        console.log('fetchDecks currentDecks: ', currentDecks)
         return currentDecks != null ? JSON.parse(currentDecks) : null;
     } catch(e) {
-        console.log('error: ', e)
+        console.log('Error in fetchDecks: ', e)
     }
 }
 
 export async function fetchDeck(deckName) {
     try {
         const currentDecks = await AsyncStorage.getItem(DECK_STORAGE_KEY);
-        // console.log('currentDecks: ', currentDecks)
         const currentDecksParsed = JSON.parse(currentDecks);
-        //const deck = JSON.parse(currentDecks)[deckName];
-        // console.log('currentDecksParsed: ', currentDecksParsed)
-        // console.log('Object.keys(currentDecksParsed): ', Object.keys(currentDecksParsed))
         const fetchedDeck = currentDecksParsed[deckName];
-        // console.log('fetchedDeck: ', fetchedDeck)
         return fetchedDeck != null ? fetchedDeck : null;
     } catch(e) {
-        console.log('error: ', e)
+        console.log('Error in fetchDeck: ', e)
     }
 }
 
 export async function saveDeckTitle(deckName) {
     try {
-        console.log('deckName ', deckName);
         const currentDecks = JSON.parse(await AsyncStorage.getItem(DECK_STORAGE_KEY));
-        console.log('currentDecks ', currentDecks);
 
         const updatedDecks = {
             ...currentDecks,
@@ -68,15 +61,16 @@ export async function saveDeckTitle(deckName) {
             }
         }
         await AsyncStorage.setItem(DECK_STORAGE_KEY,  JSON.stringify(updatedDecks));
+
         return updatedDecks;
     } catch(e) {
-        console.log('error: ', e)
+        console.log('Error in saveDeckTitle: ', e)
     }
 }
 
 export async function addCardToDeck(deckName, newQuestion) {
     try {
-        let currentDecks =  JSON.parse(await AsyncStorage.getItem(DECK_STORAGE_KEY));
+        const currentDecks = JSON.parse(await AsyncStorage.getItem(DECK_STORAGE_KEY));
 
         const updatedDecks = {
             ...currentDecks,
@@ -87,9 +81,10 @@ export async function addCardToDeck(deckName, newQuestion) {
                     answer: newQuestion.answer,})
             }
         }
+        await AsyncStorage.setItem(DECK_STORAGE_KEY,  JSON.stringify(updatedDecks));
         return updatedDecks;
     } catch(e) {
-        console.log('error: ', e)
+        console.log('Error in addCardToDeck: ', e)
     }
 }
 
@@ -97,14 +92,8 @@ export async function addCardToDeck(deckName, newQuestion) {
 export async function deleteDeck(deckName) {
     try {
         const currentDecks = JSON.parse(await AsyncStorage.getItem(DECK_STORAGE_KEY));
-        // console.log('currentDecks: ', currentDecks)
-        //const currentDecksParsed = JSON.parse(currentDecks);
-        //const deck = JSON.parse(currentDecks)[deckName];
-        // console.log('currentDecksParsed: ', currentDecksParsed)
-        // console.log('Object.keys(currentDecksParsed): ', Object.keys(currentDecksParsed))
         delete currentDecks[deckName];
         await AsyncStorage.setItem(DECK_STORAGE_KEY,  JSON.stringify(currentDecks));
-        // console.log('fetchedDeck: ', fetchedDeck)
         return currentDecks;
     } catch(e) {
         console.log('error: ', e)

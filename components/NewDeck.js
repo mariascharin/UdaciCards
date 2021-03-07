@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {Button, StyleSheet, Text, View, TextInput} from "react-native";
+import {StyleSheet, Text, View, TextInput} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { red, orange, blue, lightPurp, pink, white, purple } from '../utils/colors';
-import {fetchDecks, loadStartDecks} from "../utils/api";
+import { orange } from '../utils/colors';
+import {saveDeckTitle} from "../utils/api";
 
 class NewDeck extends Component  {
 
@@ -10,14 +10,26 @@ class NewDeck extends Component  {
         text: ''
     }
 
-
     render(){
+        const { navigation } = this.props;
         const setText = (text) => {
             this.setState(() => ({
                 text,
             }))
         }
-        const { navigation } = this.props;
+        const saveDeck = () => {
+            const deckName = this.state.text;
+            saveDeckTitle(deckName)
+                .then((returnItem) => {
+                    navigation.navigate('IndividualDeck', {
+                        deckName,
+                        deck: returnItem[deckName],
+                    })
+                })
+                .catch((e) => {
+                    console.log('Error in saveDeck: ', e)
+                })
+        }
 
         return (
             <View style = {styles.MainContainer}>
@@ -37,7 +49,7 @@ class NewDeck extends Component  {
                 <View style={{flex: 2, justifyContent: 'flex-start' }}>
                     <Icon.Button style={styles.btnContainer}
                                  backgroundColor="orange"
-                                 onPress={() => navigation.navigate('TestScreen')}>
+                                 onPress={() => saveDeck()}>
                         Save new deck
                     </Icon.Button>
                 </View>

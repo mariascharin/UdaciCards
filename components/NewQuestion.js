@@ -1,25 +1,62 @@
 import React, {Component} from 'react';
-import {Button, StyleSheet, Text, View, TextInput} from "react-native";
+import {StyleSheet, Text, View, TextInput} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { red, orange, blue, lightPurp, pink, white, purple } from '../utils/colors';
-import {fetchDecks, loadStartDecks} from "../utils/api";
+import { orange } from '../utils/colors';
+import {addCardToDeck} from "../utils/api";
 
 class NewQuestion extends Component  {
 
     state = {
-        text: ''
+        question: {
+            question: '',
+            answer: '',
+        },
+        activeButton: false,
     }
-
 
     render(){
         const { navigation, route } = this.props;
-        const { deckName, deck } = route.params;
-        const setText = (questionAnswer, text) => {
+        const { deckName } = route.params;
+        // Warning: Failed prop type: Invalid prop `value` of type `object`
+        // supplied to `ForwardRef(TextInput)`, expected `string`.
+
+        const addCardToDeckAction = (deckName, addedQuestion) => {
+            addCardToDeck(deckName, addedQuestion)
+                .then((returnItem) => {
+                    navigation.navigate('IndividualDeck', {
+                        deckName,
+                        deck: returnItem[deckName],
+                    })
+                })
+                .catch((e) => {
+                    console.log('Error in addCardToDeckAction: ', e)
+                })
+        }
+
+        const updateQuestion = (question) => {
             this.setState(() => ({
-                [questionAnswer]: text,
+                question: {
+                    question,
+                    answer: this.state.question.answer,
+                },
+                activeButton:  ((this.state.question.question !== '')
+                    && (this.state.question.answer !== ''))
             }))
         }
 
+        const updateAnswer = (answer) => {
+            this.setState(() => ({
+                question: {
+                    question: this.state.question.question,
+                    answer,
+                },
+                activeButton:  ((this.state.question.question !== '')
+                    && (this.state.question.answer !== ''))
+            }))
+        }
+
+        // Check if there is both a question and answer before button appears
+        // Change onPress to use addCardToDeckAction with this.state.question
         return (
             <View style = {styles.MainContainer}>
                 <View style={{flex: 2, justifyContent: 'flex-end'}}>
@@ -30,23 +67,25 @@ class NewQuestion extends Component  {
                     <TextInput
                         style={{height: 40}}
                         placeholder="Type your question here!"
-                        onChangeText={text => setText('question', text)}
-                        value={this.state.question}
+                        onChangeText={text => updateQuestion(text)}
+                        value={this.state.question.question}
                     />
                     <Text style={{fontSize: 10, color: "orange"}}> </Text>
                     <TextInput
                         style={{height: 40}}
                         placeholder="Type your answer here!"
-                        onChangeText={text => setText('answer', text)}
-                        value={this.state.answer}
+                        onChangeText={text => updateAnswer(text)}
+                        value={this.state.question.answer}
                     />
                 </View>
-                <View style={{flex: 2, justifyContent: 'flex-start' }}>
-                    <Icon.Button style={styles.btnContainer}
-                                 backgroundColor="orange"
-                                 onPress={() => navigation.navigate('TestScreen')}>
+                <View style={{flex: 2, justifyContent: 'flex-start'}}>
+                    {this.state.question.question.length > 0 && this.state.question.answer.length > 0
+                    && <Icon.Button style={styles.btnContainer}
+                                  backgroundColor="orange"
+                                  onPress={() => addCardToDeckAction(deckName, this.state.question)}
+                    >
                         Save new question
-                    </Icon.Button>
+                    </Icon.Button>}
                 </View>
             </View>
         );

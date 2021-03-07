@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { red, orange, blue, lightPurp, pink, white, purple } from '../utils/colors';
+import { orange, white } from '../utils/colors';
 
 function DeckList({ route, navigation }) {
     const { allDecks } = route.params;
@@ -10,10 +10,17 @@ function DeckList({ route, navigation }) {
     const cardButton = (deckName) => {
         return (
             <View key={deckName}>
-                <Icon.Button style={styles.btnContainer}
-                             backgroundColor="orange"
-                             onPress={() => navigation.navigate('TestScreen')}>
-                    {deckName}
+                <Icon.Button
+                    style={styles.btnContainer}
+                     backgroundColor="orange"
+                     onPress={() => {
+                         navigation.navigate('IndividualDeck', {
+                             deckName,
+                             deck: allDecks[deckName],
+                         })
+                     }}
+                >
+                    {`${deckName} (${allDecks[deckName].questions.length} cards)`}
                 </Icon.Button>
                 <Text style={{fontSize: 3, color: "orange"}}> </Text>
             </View>
@@ -23,12 +30,20 @@ function DeckList({ route, navigation }) {
     return (
         <View>
             <Icon name="cards-outline" size={200} color="orange"/>
+            <Text style={{fontSize: 50, color: "orange"}}> </Text>
             <Text style={{fontSize: 30, color: "orange"}}>Select Deck:</Text>
             <Text style={{fontSize: 10, color: "orange"}}> </Text>
 
             {deckTitles.map((thisTitle) => (
                 cardButton(thisTitle)
             ))}
+            <Text style={{fontSize: 50, color: "orange"}}> </Text>
+            <Icon.Button style={styles.newDeckBtnContainer}
+                         backgroundColor="orange"
+                         onPress={() => navigation.navigate('NewDeck')}>
+                Add New Deck
+            </Icon.Button>
+
         </View>
     );
 //}
@@ -50,4 +65,12 @@ const styles = StyleSheet.create({
         fontSize: 70,
         borderRadius: 0,
     },
+    newDeckBtnContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        color: "orange",
+        fontSize: 70,
+        width: 210,
+}
 });

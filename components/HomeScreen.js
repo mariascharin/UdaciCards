@@ -6,14 +6,12 @@ import {loadStartDecks} from "../utils/api";
 function HomeScreen({ navigation }) {
 
     const handleStartPlaying = (nextScreen) => {
-        let allDecks;
         loadStartDecks()
-            .then((returnItem) => {
-                allDecks = returnItem;
+            .then((allDecks) => {
                 navigation.navigate(nextScreen, {allDecks});
             })
             .catch((e) => {
-                console.log('error: ', e)
+                console.log('Error in handleStartPlaying: ', e)
             })
     }
     return (
@@ -23,7 +21,7 @@ function HomeScreen({ navigation }) {
             <Text style={{fontSize: 10, color: "orange"}}> </Text>
             <Icon.Button style={styles.btnContainer}
                          backgroundColor="orange"
-                         onPress={() => navigation.navigate('TestScreen')}>
+                         onPress={() => handleStartPlaying('DeckList')}>
                 Start playing
             </Icon.Button>
         </View>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Button, StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { red, orange, blue, lightPurp, pink, white, purple } from '../utils/colors';
+import { red, orange, white } from '../utils/colors';
 
 class Quiz extends Component  {
 
@@ -12,6 +12,10 @@ class Quiz extends Component  {
         nbrCorrectAnswers: 0,
         questions: [],
         answers: [],
+        result: {
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+        },
     }
 
     componentDidMount() {
@@ -21,74 +25,33 @@ class Quiz extends Component  {
             ...this.state,
             nbrQuestions,
             questions: questions,
-            answers: questions,
         }));
     }
 
     render(){
         const { route, navigation } = this.props;
         const { deckName, deck } = route.params;
+        const {nbrQuestions, currentIndex, result} = this.state;
+        const showResults = currentIndex === nbrQuestions
+        const ticker = !showResults ? `${currentIndex + 1}/${nbrQuestions}` : ' ';
 
-        const calculateResult = () => {
-            const correctAnswers = this.state.answers.map((question) => (
-                question.correctAnswer === true))
-                .length;
-            const incorrectAnswers = this.state.answers.map((question) => (
-                question.correctAnswer === false))
-                .length;
-            return {
-                correctAnswers,
-                incorrectAnswers,
-                unanswered: this.state.nbrQuestions - correctAnswers - incorrectAnswers
-            };
-        }
-
-        const handleViewResults = () => {
-
-            const result = calculateResult();
-
+        const answer = (correct) => {
+            const correctAnswers = correct ? result.correctAnswers + 1 : result.correctAnswers;
+            const incorrectAnswers = !correct ? result.incorrectAnswers + 1 : result.incorrectAnswers;
+            const nextIndex = currentIndex + 1;
             this.setState(() => ({
+                ...this.state,
                 questionFaceUp: true,
-                currentIndex: 0,
-                nbrQuestions: 0,
-                nbrCorrectAnswers: 0,
-                questions: [],
-                answers: [],
+                currentIndex: nextIndex,
+                result: {
+                    correctAnswers,
+                    incorrectAnswers,
+                }
             }))
-
-            navigation.navigate('ResultsCard', {
-                result,
-            })
-
-        }
-
-        const nextCard = () => {
-            const {nbrQuestions, currentIndex} = this.state;
-            if (currentIndex <= nbrQuestions - 1){
-                const nextIndex = currentIndex + 1;
-                this.setState((state) => ({
-                    ...state,
-                    questionFaceUp: true,
-                    currentIndex: nextIndex,
-                }))
-            }
-        }
-
-        const previousCard = () => {
-            const currentIndex = this.state.currentIndex;
-            if (currentIndex > 0){
-                const nextIndex = currentIndex - 1;
-                this.setState(() => ({
-                    ...this.state,
-                    questionFaceUp: true,
-                    currentIndex: nextIndex,
-                }))
-            }
         }
 
     const cardContents = () => {
-        const {questionFaceUp, currentIndex, nbrQuestions} = this.state;
-        const ticker = `${currentIndex + 1}/${nbrQuestions}`;
+        const {questionFaceUp, currentIndex} = this.state;
         const text = questionFaceUp
             ? deck.questions[currentIndex].question
             : deck.questions[currentIndex].answer;
@@ -101,35 +64,9 @@ class Quiz extends Component  {
                 questionFaceUp: !questionFaceUp,
             }))
         }
-        const disableForward = currentIndex + 1 === nbrQuestions
-        const disableBackward = currentIndex === 0
+
         return (
             <View style = {styles.MainContainer}>
-                <Text style={styles.TickerContainer}>{ticker}</Text>
-                <View style = {styles.TopButtonContainer}>
-                    <View style = {{alignItems: "flex-end"}}>
-                    {!disableBackward && <Icon.Button
-                        style={styles.backForwardBtnContainer}
-                        onPress={() => previousCard(deck)}
-                    >
-                        Previous Question
-                    </Icon.Button>}
-                    </View>
-                    <View style = {{alignItems: "flex-start"}}>
-                        {!disableForward && <Icon.Button
-                            style={styles.backForwardBtnContainer}
-                            onPress={() => nextCard(deck)}
-                        >
-                            Next Question
-                        </Icon.Button>}
-                        {disableForward && <Icon.Button
-                            style={styles.backForwardBtnContainer}
-                            onPress={() => handleViewResults()}
-                        >
-                            View results
-                        </Icon.Button>}
-                    </View>
-            </View>
                 <View style = {styles.QuestionContainer}>
                     <Text style={{
                         fontSize: 40,
@@ -147,25 +84,69 @@ class Quiz extends Component  {
                 <View style = {styles.BottomButtonContainer}>
                     <Icon.Button
                         style={styles.correctBtnContainer}
-                        onPress={() => navigation.navigate('TestScreen')}
+                        onPress={() => answer(true)}
                     >
                         Correct
                     </Icon.Button>
                     <Icon.Button
                         style={styles.incorrectBtnContainer}
-                        onPress={() => navigation.navigate('TestScreen')}
+                        onPress={() => answer(false)}
                     >
                         Incorrect
                     </Icon.Button>
                 </View>
-                <View style={styles.BottomMargin}></View>
             </View>
         )
     }
 
+    const resultContents = () => {
+        const correctAnswers = this.state.result.correctAnswers;
+        const incorrectAnswers = this.state.result.incorrectAnswers;
+        const percent = Math.round(100 * correctAnswers/(correctAnswers + incorrectAnswers));
+        const playAgain = () => {
+            this.setState(() => (
+                {...this.state,
+                currentIndex: 0,
+                    result: {
+                        correctAnswers: 0,
+                        incorrectAnswers: 0,
+                    },
+                }))
+            }
+            return (
+                <View style = {styles.MainContainer}>
+                <View style = {styles.QuestionContainer}>
+                    <View style={{flex: 3, justifyContent: 'flex-end'}}>
+                        <Text style={{fontSize: 50, color: "orange"}}>Result</Text>
+                        <Text style={{fontSize: 50, color: "orange"}}>{`${percent} %`}</Text>
+                    </View>
+                    <View style={{flex: 1, justifyContent: 'flex-start'}}>
+                        <Text style={{ color: white }}>Correct: {correctAnswers}</Text>
+                        <Text style={{ color: white }}>Incorrect: {incorrectAnswers}</Text>
+                    </View>
+                    <View style = {styles.BottomButtonContainer}>
+                        <Icon.Button style={styles.btnContainer}
+                                     backgroundColor="orange"
+                                     onPress={() => navigation.navigate('HomeScreen')}>
+                            Back to Start Screen
+                        </Icon.Button>
+                        <Icon.Button style={styles.btnContainer}
+                                     backgroundColor="orange"
+                                     onPress={() => playAgain()}>
+                            Play Again
+                        </Icon.Button>
+                    </View>
+                </View>
+                </View>
+            );
+        }
+
     return (
         <View style = {styles.MainContainer}>
-            {cardContents()}
+            <Text style={styles.TickerContainer}>{ticker}</Text>
+            {!showResults && cardContents()}
+            {showResults && resultContents()}
+            <View style={styles.BottomMargin}></View>
         </View>
     )}
 }
@@ -219,7 +200,7 @@ const styles = StyleSheet.create({
     },
     btnContainer: {
         alignItems: 'center',
-        justifyContent: 'space-around',
+        justifyContent: 'center',
         padding: 10,
         fontSize: 70,
         width: 210,

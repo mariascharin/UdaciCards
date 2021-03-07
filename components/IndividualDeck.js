@@ -1,30 +1,54 @@
 import React from 'react';
 import {Button, StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { red, orange, blue, lightPurp, pink, white, purple } from '../utils/colors';
+import { red, orange, blue, white } from '../utils/colors';
+import {deleteDeck} from "../utils/api";
 
 function IndividualDeck({ route, navigation }) {
     const { deckName, deck } = route.params;
+
+    const deleteDeckAction = (deckName) => {
+        deleteDeck(deckName)
+            .then((allDecks) => {
+                navigation.navigate('DeckList', {allDecks});
+            })
+            .catch((e) => {
+                console.log('Error in deleteDeckAction: ', e)
+            })
+    }
+
+    const addQuestion = (deckName) => {
+        navigation.navigate('NewQuestion', {deckName})
+    }
+
     return (
         <View style = {styles.MainContainer}>
             <Icon name="cards-outline" size={100} color="orange" />
             <Text style={{fontSize: 35, color: "orange"}}>{deckName}</Text>
-            <Text style={{fontSize: 20, color: white}}>{`${deck.questions.length} cards`}</Text>
+            {deck.questions.length === 1
+                ? <Text style={{fontSize: 20, color: white}}>{`${deck.questions.length} card`}</Text>
+                : <Text style={{fontSize: 20, color: white}}>{`${deck.questions.length} cards`}</Text>}
             <Text style={{fontSize: 35, color: "orange"}}> </Text>
-            <Icon.Button style={styles.btnContainer}
-                         backgroundColor="orange"
-                         onPress={() => navigation.navigate('TestScreen')}>
-                Start Quiz
-            </Icon.Button>
+            {deck.questions.length === 0
+                ? <Text style={{fontSize: 20, color: white}}>You must add questions before playing!</Text>
+                : <Icon.Button style={styles.btnContainer}
+                    backgroundColor="orange"
+                    onPress={() => navigation.navigate('Quiz', {
+                    deckName,
+                    deck,
+                })}>
+                    Start Quiz
+                </Icon.Button>}
             <Text style={{fontSize: 5, color: "orange"}}> </Text>
             <Icon.Button style={styles.btnContainer}
                          backgroundColor="orange"
-                         onPress={() => navigation.navigate('TestScreen')}>
+                         onPress={() => addQuestion(deckName)}
+            >
                 Add Question
             </Icon.Button>
             <Text style={{fontSize: 10, color: "orange"}}> </Text>
             <Button
-                onPress={() => navigation.navigate('TestScreen')}
+                onPress={() => deleteDeckAction(deckName)}
                 title="Delete Deck"
                 color={"red"}
             />

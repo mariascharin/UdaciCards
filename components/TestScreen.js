@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, StyleSheet, Text, View} from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import {resetDecks, loadStartDecks, fetchDecks, fetchDeck, saveDeckTitle, addCardToDeck, deleteDeck} from "../utils/api";
 
 // TEST SCREENS:
@@ -10,7 +9,6 @@ import {resetDecks, loadStartDecks, fetchDecks, fetchDeck, saveDeckTitle, addCar
 // IndividualDeck
 // NewQuestion
 // Quiz
-// ResultsCard
 // TEST API FUNCTIONS:
 // fetchDecks - to make sure there is no data for DECK_STORAGE_KEY = 'UdaciCards:decks'
 // loadStartDecks
@@ -190,10 +188,6 @@ function TestScreen({ navigation }) {
                 title="Check Quiz"
             />
             <Button
-                onPress={() => navigation.navigate('ResultsCard', {result})}
-                title="Check ResultsCard"
-            />
-            <Button
                 onPress={() => testResetDecks()}
                 title="function: testResetDecks"
             />
@@ -214,13 +208,13 @@ function TestScreen({ navigation }) {
                 title="function: testFetchDeck"
             />
             <Button
-                onPress={() => testSaveDeckTitle("CapitalVillages")}
+                onPress={() => testSaveDeckTitle("FunFairs")}
                 title="function: testSaveDeckTitle"
             />
             <Button
-                onPress={() => testAddCardToDeck("CapitalVillages", {
-                    question: "What is the capital city of Sweden?",
-                    answer: "Stockholm"
+                onPress={() => testAddCardToDeck("JavaScript", {
+                    question: "z",
+                    answer: "v"
                 })}
                 title="function: testAddCardToDeck"
             />
