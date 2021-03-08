@@ -1,21 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { orange, white } from '../utils/colors';
 import {loadStartDecks} from "../utils/api";
 
-function DeckList({ navigation }) {
-
+function DeckList({ navigation, route }) {
     const [allDecks, setAllDecks] = useState({});
+
+    useEffect(() => {
         loadStartDecks()
             .then((returnItem) => {
+                console.log('Calling loadStartDecks ', returnItem);
                 setAllDecks(returnItem);
             })
             .catch((e) => {
-                console.log('Error in DeckList: ', e)
+                console.log('Error when calling loadStartDecks: ', e)
             })
+    }, [route])
 
-    //const { allDecks } = route.params;
     const deckTitles = Object.keys(allDecks);
 
     const cardButton = (deckName) => {

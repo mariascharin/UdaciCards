@@ -5,6 +5,10 @@ import {loadStartDecks} from "../utils/api";
 
 function HomeScreen({ navigation }) {
 
+    if (this.props.route) {
+        console.log('Route is a thing!');
+    }
+
     const handleStartPlaying = (nextScreen) => {
         loadStartDecks()
             .then((allDecks) => {

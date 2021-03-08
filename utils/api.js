@@ -1,7 +1,7 @@
 import {AsyncStorage} from "react-native";
 import {startDecks} from './_DATA';
 
-export const DECK_STORAGE_KEY = 'UdaciCards:decks'
+export const DECK_STORAGE_KEY = 'UdaciCards:decks';
 
 export async function resetDecks() {
     try {

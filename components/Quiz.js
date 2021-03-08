@@ -128,7 +128,7 @@ class Quiz extends Component  {
                     <View style = {styles.BottomButtonContainer}>
                         <Icon.Button style={styles.btnContainer}
                                      backgroundColor="orange"
-                                     onPress={() => navigation.navigate('DeckList')}>
+                                     onPress={() => navigation.navigate('DeckList', {})}>
                             Back to Start Screen
                         </Icon.Button>
                         <Icon.Button style={styles.btnContainer}

@@ -37,7 +37,6 @@ class NewDeck extends Component  {
                     <Text style={{fontSize: 50, color: "orange"}}>New Deck</Text>
                 </View>
                 <View style={{flex: 1, justifyContent: 'flex-start'}}>
-
                     <TextInput
                         style={{height: 40}}
                         placeholder="Type your deck name here!"
@@ -47,11 +46,12 @@ class NewDeck extends Component  {
                     />
                 </View>
                 <View style={{flex: 2, justifyContent: 'flex-start' }}>
+                    {this.state.text.length > 0 &&
                     <Icon.Button style={styles.btnContainer}
-                                 backgroundColor="orange"
-                                 onPress={() => saveDeck()}>
+                                  backgroundColor="orange"
+                                  onPress={() => saveDeck()}>
                         Save new deck
-                    </Icon.Button>
+                    </Icon.Button>}
                 </View>
             </View>
         );

@@ -17,8 +17,6 @@ class NewQuestion extends Component  {
     render(){
         const { navigation, route } = this.props;
         const { deckName } = route.params;
-        // Warning: Failed prop type: Invalid prop `value` of type `object`
-        // supplied to `ForwardRef(TextInput)`, expected `string`.
 
         const addCardToDeckAction = (deckName, addedQuestion) => {
             addCardToDeck(deckName, addedQuestion)
@@ -55,8 +53,6 @@ class NewQuestion extends Component  {
             }))
         }
 
-        // Check if there is both a question and answer before button appears
-        // Change onPress to use addCardToDeckAction with this.state.question
         return (
             <View style = {styles.MainContainer}>
                 <View style={{flex: 2, justifyContent: 'flex-end'}}>
