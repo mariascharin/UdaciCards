@@ -1,7 +1,47 @@
 import {AsyncStorage} from "react-native";
 import {startDecks} from './_DATA';
+import {timeToString} from './helpers';
 
+export const NOTIFICATION_KEY = 'UdaciCards:notification';
 export const DECK_STORAGE_KEY = 'UdaciCards:decks';
+
+export async function checkDailyQuiz() {
+    // Returns true if quiz has been completed today.
+    try {
+        let log = JSON.parse(await AsyncStorage.getItem(NOTIFICATION_KEY));
+        if (!log) {
+            // For testing purpose enter dummy value if the game has never been played before
+            await AsyncStorage.setItem(NOTIFICATION_KEY,  JSON.stringify({
+                    ["2021-03-08"]: 'done',
+                }
+            ));
+            console.log('Entered start data ');
+            return false;
+        } else if (log[timeToString()]){
+            return true;
+        } else {
+            return false;
+        }
+    } catch(e) {
+        console.log('Error in logQuiz: ', e)
+    }
+}
+
+export async function logQuiz() {
+    try {
+        let log = JSON.parse(await AsyncStorage.getItem(NOTIFICATION_KEY));
+        if (!log) {
+            log = {};
+        }
+        await AsyncStorage.setItem(NOTIFICATION_KEY,  JSON.stringify({
+            ...log,
+            [timeToString()]: 'done',
+            }
+        ));
+    } catch(e) {
+        console.log('Error in logQuiz: ', e)
+    }
+}
 
 export async function resetDecks() {
     try {
@@ -18,6 +58,7 @@ export async function resetDecks() {
 export async function loadStartDecks() {
     try {
         let currentDecks = JSON.parse(await AsyncStorage.getItem(DECK_STORAGE_KEY));
+        //console.log('currentDecks', currentDecks);
         if (!currentDecks) {
             console.log('No decks discovered. Loading start decks.');
             await AsyncStorage.setItem(DECK_STORAGE_KEY,  JSON.stringify(startDecks));
@@ -96,6 +137,6 @@ export async function deleteDeck(deckName) {
         await AsyncStorage.setItem(DECK_STORAGE_KEY,  JSON.stringify(currentDecks));
         return currentDecks;
     } catch(e) {
-        console.log('error: ', e)
+        console.log('Error in deleteDeck: ', e)
     }
 }

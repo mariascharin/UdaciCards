@@ -2,19 +2,30 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { orange, white } from '../utils/colors';
-import {loadStartDecks} from "../utils/api";
+import {checkDailyQuiz, loadStartDecks} from "../utils/api";
+import {setDailyReminder, setDailyEncouragement} from '../utils/helpers';
 
 function DeckList({ navigation, route }) {
     const [allDecks, setAllDecks] = useState({});
+    const [quizDone, setQuizDone] = useState(true);
 
     useEffect(() => {
         loadStartDecks()
             .then((returnItem) => {
-                console.log('Calling loadStartDecks ', returnItem);
                 setAllDecks(returnItem);
             })
             .catch((e) => {
                 console.log('Error when calling loadStartDecks: ', e)
+            })
+    }, [route])
+
+    useEffect(() => {
+        checkDailyQuiz()
+            .then((completed) => {
+                setQuizDone(completed);
+            })
+            .catch((e) => {
+                console.log('Error when calling checkDailyQuiz: ', e)
             })
     }, [route])
 
@@ -44,6 +55,9 @@ function DeckList({ navigation, route }) {
         <View>
             <Icon name="cards-outline" size={200} color="orange"/>
             <Text style={{fontSize: 50, color: "orange"}}> </Text>
+            <Text style={{fontSize: 15, color: "red"}}> {!quizDone && setDailyReminder()} </Text>
+            <Text style={{fontSize: 15, color: "green"}}> {quizDone && setDailyEncouragement()} </Text>
+            <Text style={{fontSize: 10, color: "orange"}}> </Text>
             <Text style={{fontSize: 30, color: "orange"}}>Select Deck:</Text>
             <Text style={{fontSize: 10, color: "orange"}}> </Text>
 

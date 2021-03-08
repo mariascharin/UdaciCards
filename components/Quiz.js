@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Button, StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { red, orange, white } from '../utils/colors';
-import {fetchDecks} from "../utils/api";
+import {logQuiz} from "../utils/api";
 
 class Quiz extends Component  {
 
@@ -33,8 +33,10 @@ class Quiz extends Component  {
         const { route, navigation } = this.props;
         const { deckName, deck } = route.params;
         const {nbrQuestions, currentIndex, result} = this.state;
-        const showResults = currentIndex === nbrQuestions
+        const showResults = nbrQuestions > 0 && currentIndex === nbrQuestions
         const ticker = !showResults ? `${currentIndex + 1}/${nbrQuestions}` : ' ';
+
+        showResults && logQuiz()
 
         const answer = (correct) => {
             const correctAnswers = correct ? result.correctAnswers + 1 : result.correctAnswers;
