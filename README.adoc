@@ -1,0 +1,30 @@
+= Udacity React Nanodegree Project: UdaciCards
+
+This is the third project in the Udacity React Nanodegree program, showing acquired skills in React Native development.
+
+== Contents
+* <<the-app>>
+* <<getting-started>>
+* <<supported-platforms>>
+
+[[the-app]]
+== The App
+This app is a flashcard game that lets the user test their knowledge in a subject area.
+They can choose from existing cards, add more cards or create entirely new card decks.
+
+image::assets/UdaciCards.gif[UdaciCards,30%]
+
+[[getting-started]]
+== Getting Started
+To run this project, clone this repository and run:
+
+* `yarn install`
+* `yarn start`
+
+Additionally, you will need an iOS simulator.
+
+
+[[supported-platforms]]
+== Supported Platforms
+
+This app has been developed and tested for iOS.
