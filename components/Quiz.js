@@ -53,69 +53,76 @@ class Quiz extends Component  {
             }))
         }
 
-    const cardContents = () => {
-        const {questionFaceUp, currentIndex} = this.state;
-        const text = questionFaceUp
-            ? deck.questions[currentIndex].question
-            : deck.questions[currentIndex].answer;
-        const buttonText = questionFaceUp
-            ? 'View Answer'
-            : 'View Question';
-        const flipCardAction = () => {
-            this.setState(() => ({
-                ...this.state,
-                questionFaceUp: !questionFaceUp,
-            }))
-        }
-
-        return (
-            <View style = {styles.MainContainer}>
-                <View style = {styles.QuestionContainer}>
-                    <Text style={{
-                        fontSize: 40,
-                        color: "orange",
-                        textAlign: "center"
-                    }}>
-                        {text}
-                    </Text>
-                    <Button
-                        color={white}
-                        title={buttonText}
-                        onPress={() => flipCardAction()}
-                    />
-                </View>
-                <View style = {styles.BottomButtonContainer}>
-                    <Icon.Button
-                        style={styles.correctBtnContainer}
-                        onPress={() => answer(true)}
-                    >
-                        Correct
-                    </Icon.Button>
-                    <Icon.Button
-                        style={styles.incorrectBtnContainer}
-                        onPress={() => answer(false)}
-                    >
-                        Incorrect
-                    </Icon.Button>
-                </View>
-            </View>
-        )
-    }
-
-    const resultContents = () => {
-        const correctAnswers = this.state.result.correctAnswers;
-        const incorrectAnswers = this.state.result.incorrectAnswers;
-        const percent = Math.round(100 * correctAnswers/(correctAnswers + incorrectAnswers));
-        const playAgain = () => {
-            this.setState(() => (
-                {...this.state,
-                currentIndex: 0,
-                    result: {
-                        correctAnswers: 0,
-                        incorrectAnswers: 0,
-                    },
+        const cardContents = () => {
+            const {questionFaceUp, currentIndex} = this.state;
+            const text = questionFaceUp
+                ? deck.questions[currentIndex].question
+                : deck.questions[currentIndex].answer;
+            const buttonText = questionFaceUp
+                ? 'View Answer'
+                : 'View Question';
+            const flipCardAction = () => {
+                this.setState(() => ({
+                    ...this.state,
+                    questionFaceUp: !questionFaceUp,
                 }))
             }
+
+            return (
+                <View style = {styles.MainContainer}>
+                    <View style = {styles.QuestionContainer}>
+                        <Text style={{
+                            fontSize: 40,
+                            color: "orange",
+                            textAlign: "center"
+                        }}>
+                            {text}
+                        </Text>
+                        <Button
+                            color={white}
+                            title={buttonText}
+                            onPress={() => flipCardAction()}
+                        />
+                    </View>
+                    <View style = {styles.BottomButtonContainer}>
+                        <Icon.Button
+                            style={styles.correctBtnContainer}
+                            onPress={() => answer(true)}
+                        >
+                            Correct
+                        </Icon.Button>
+                        <Icon.Button
+                            style={styles.incorrectBtnContainer}
+                            onPress={() => answer(false)}
+                        >
+                            Incorrect
+                        </Icon.Button>
+                    </View>
+                </View>
+            )
+        }
+
+        const resultContents = () => {
+            const correctAnswers = this.state.result.correctAnswers;
+            const incorrectAnswers = this.state.result.incorrectAnswers;
+            const percent = Math.round(100 * correctAnswers/(correctAnswers + incorrectAnswers));
+
+            const playAgain = () => {
+                this.setState(() => (
+                    {...this.state,
+                    currentIndex: 0,
+                        result: {
+                            correctAnswers: 0,
+                            incorrectAnswers: 0,
+                        },
+                    })
+                )
+            }
+
+            const backToDeck = () => {
+                navigation.navigate('IndividualDeck', { deckName, deck })
+            }
+
             return (
                 <View style = {styles.MainContainer}>
                 <View style = {styles.QuestionContainer}>
@@ -130,13 +137,20 @@ class Quiz extends Component  {
                     <View style = {styles.BottomButtonContainer}>
                         <Icon.Button style={styles.btnContainer}
                                      backgroundColor="orange"
-                                     onPress={() => navigation.navigate('DeckList', {})}>
-                            Back to Start Screen
+                                     onPress={() => playAgain()}>
+                            Restart Quiz
                         </Icon.Button>
+                        <Text style={{fontSize: 50}}> </Text>
                         <Icon.Button style={styles.btnContainer}
                                      backgroundColor="orange"
-                                     onPress={() => playAgain()}>
-                            Play Again
+                                     onPress={() => backToDeck()}>
+                            Back to Deck
+                        </Icon.Button>
+                        <Text style={{fontSize: 50}}> </Text>
+                        <Icon.Button style={styles.btnContainer}
+                                     backgroundColor="orange"
+                                     onPress={() => navigation.navigate('DeckList', {})}>
+                            Back to Deck List
                         </Icon.Button>
                     </View>
                 </View>
@@ -144,14 +158,15 @@ class Quiz extends Component  {
             );
         }
 
-    return (
-        <View style = {styles.MainContainer}>
-            <Text style={styles.TickerContainer}>{ticker}</Text>
-            {!showResults && cardContents()}
-            {showResults && resultContents()}
-            <View style={styles.BottomMargin}></View>
-        </View>
-    )}
+        return (
+            <View style = {styles.MainContainer}>
+                <Text style={styles.TickerContainer}>{ticker}</Text>
+                {!showResults && cardContents()}
+                {showResults && resultContents()}
+                <View style={styles.BottomMargin}></View>
+            </View>
+        )
+    }
 }
 
 export default Quiz;
