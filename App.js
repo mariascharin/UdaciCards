@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from "./components/HomeScreen";
 import DeckList from './components/DeckList';
 import NewDeck from './components/NewDeck';
 import IndividualDeck from './components/IndividualDeck';
 import NewQuestion from './components/NewQuestion';
 import Quiz from './components/Quiz';
-import {loadStartDecks} from "./utils/api";
+
 
 const Stack = createStackNavigator();
 

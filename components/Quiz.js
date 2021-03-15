@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Button, StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { red, orange, white } from '../utils/colors';
-import {logQuiz} from "../utils/api";
+import {resetReminder} from "../utils/api";
 
 class Quiz extends Component  {
 
@@ -36,7 +36,11 @@ class Quiz extends Component  {
         const showResults = nbrQuestions > 0 && currentIndex === nbrQuestions
         const ticker = !showResults ? `${currentIndex + 1}/${nbrQuestions}` : ' ';
 
-        showResults && logQuiz()
+        if (showResults) {
+            // If we are ready to show results, it means we have completed a survey,
+            // so reset reminder to fire tomorrow
+            resetReminder();
+        }
 
         const answer = (correct) => {
             const correctAnswers = correct ? result.correctAnswers + 1 : result.correctAnswers;
@@ -120,7 +124,7 @@ class Quiz extends Component  {
             }
 
             const backToDeck = () => {
-                navigation.navigate('IndividualDeck', { deckName, deck })
+                navigation.navigate('IndividualDeck', { deckName, deck, })
             }
 
             return (

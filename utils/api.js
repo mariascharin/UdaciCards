@@ -1,46 +1,58 @@
-import {AsyncStorage} from "react-native";
+import {AsyncStorage, Alert, Linking} from "react-native";
 import {startDecks} from './_DATA';
-import {timeToString} from './helpers';
+import {thisMoment, timeToString} from './helpers';
+import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
 
 export const NOTIFICATION_KEY = 'UdaciCards:notification';
 export const DECK_STORAGE_KEY = 'UdaciCards:decks';
 
-export async function checkDailyQuiz() {
-    // Returns true if quiz has been completed today.
-    try {
-        let log = JSON.parse(await AsyncStorage.getItem(NOTIFICATION_KEY));
-        if (!log) {
-            // For testing purpose enter dummy value if the game has never been played before
-            await AsyncStorage.setItem(NOTIFICATION_KEY,  JSON.stringify({
-                    ["2021-03-08"]: 'done',
-                }
-            ));
-            console.log('Entered start data ');
-            return false;
-        } else if (log[timeToString()]){
-            return true;
-        } else {
-            return false;
-        }
-    } catch(e) {
-        console.log('Error in logQuiz: ', e)
-    }
+export async function clearNotifications() {
+    await AsyncStorage.removeItem(NOTIFICATION_KEY);
+    Notifications.cancelAllScheduledNotificationsAsync();
 }
 
-export async function logQuiz() {
-    try {
-        let log = JSON.parse(await AsyncStorage.getItem(NOTIFICATION_KEY));
-        if (!log) {
-            log = {};
+export async function resetReminder() {
+    // Cancels reminder if it exists, then creates new reminder
+    clearNotifications()
+        .then(() => console.log('Successfully cancelled notification in resetReminder'))
+        .catch(e => console.error('Error in resetReminder: ', e))
+    setDailyNotification();
+}
+
+export const setDailyNotification = (notificationId) => {
+    // Specifies reminder message and schedules it for next time due
+    const localNotification = {
+        content: {
+            title: "Remember to keep learning 👋",
+            body: "👋 A gentle reminder to do your daily quiz!",
+        },
+        trigger: {
+            hour: 20,
+            repeats: true
         }
-        await AsyncStorage.setItem(NOTIFICATION_KEY,  JSON.stringify({
-            ...log,
-            [timeToString()]: 'done',
-            }
-        ));
-    } catch(e) {
-        console.log('Error in logQuiz: ', e)
     }
+    Notifications.scheduleNotificationAsync(localNotification)
+        .then(id => console.info(`Notification scheduled (${id}) for 20.00 tomorrow`))
+        .catch(e => console.error('Error in scheduleNotificationAsync: ', e))
+}
+
+export const sendImmediateNotification = () => {
+    const localNotification = {
+        content: {
+            title: "Remember to keep learning 👋",
+            body: "👋 A gentle reminder to do your daily quiz!",
+        },
+        trigger:
+            null
+    }
+
+    console.log('Scheduling immediate notification:', { localNotification })
+
+    Notifications.scheduleNotificationAsync(localNotification)
+        .then(id => console.info(`Immediate notification scheduled (${id}) at ${thisMoment()}`))
+        .catch(err => console.error(err))
+
 }
 
 export async function resetDecks() {

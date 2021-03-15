@@ -2,10 +2,11 @@ import React from 'react';
 import {Button, StyleSheet, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { red, orange, blue, white } from '../utils/colors';
-import {deleteDeck} from "../utils/api";
+import {deleteDeck, loadStartDecks} from "../utils/api";
 
 function IndividualDeck({ route, navigation }) {
     const { deckName, deck } = route.params;
+
 
     const deleteDeckAction = (deckName) => {
         deleteDeck(deckName)
@@ -34,8 +35,8 @@ function IndividualDeck({ route, navigation }) {
                 : <Icon.Button style={styles.btnContainer}
                     backgroundColor="orange"
                     onPress={() => navigation.navigate('Quiz', {
-                    deckName,
-                    deck,
+                        deckName,
+                        deck,
                 })}>
                     Start Quiz
                 </Icon.Button>}
