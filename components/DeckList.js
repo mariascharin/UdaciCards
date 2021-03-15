@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from "react-native";
+import * as Notifications from 'expo-notifications';
+//import * as Permissions from 'expo-permissions';
+import React, { useState, useEffect, useRef } from 'react';
+import {StyleSheet, Text, View, Button, SafeAreaView, ScrollView, StatusBar} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { orange, white } from '../utils/colors';
-import {checkDailyQuiz, loadStartDecks} from "../utils/api";
-import {setDailyReminder, setDailyEncouragement} from '../utils/helpers';
+import {loadStartDecks, setDailyNotification, sendImmediateNotification, resetReminder} from "../utils/api";
 
 function DeckList({ navigation, route }) {
     const [allDecks, setAllDecks] = useState({});
-    const [quizDone, setQuizDone] = useState(true);
 
     useEffect(() => {
         loadStartDecks()
@@ -20,20 +20,21 @@ function DeckList({ navigation, route }) {
     }, [route])
 
     useEffect(() => {
-        checkDailyQuiz()
-            .then((completed) => {
-                setQuizDone(completed);
-            })
+        resetReminder()
+            .then((status) => {
+                    console.log('Status after resetReminder: ', status)
+                })
             .catch((e) => {
-                console.log('Error when calling checkDailyQuiz: ', e)
+                console.log('Error when calling resetReminder: ', e)
             })
-    }, [route])
+    })
 
     const deckTitles = Object.keys(allDecks);
 
     const cardButton = (deckName) => {
         return (
             <View key={deckName}>
+
                 <Icon.Button
                     style={styles.btnContainer}
                      backgroundColor="orange"
@@ -52,28 +53,28 @@ function DeckList({ navigation, route }) {
     }
 
     return (
-        <View>
-            <Icon name="cards-outline" size={200} color="orange"/>
-            <Text style={{fontSize: 50, color: "orange"}}> </Text>
-            <Text style={{fontSize: 15, color: "red"}}> {!quizDone && setDailyReminder()} </Text>
-            <Text style={{fontSize: 15, color: "green"}}> {quizDone && setDailyEncouragement()} </Text>
-            <Text style={{fontSize: 10, color: "orange"}}> </Text>
-            <Text style={{fontSize: 30, color: "orange"}}>Select Deck:</Text>
-            <Text style={{fontSize: 10, color: "orange"}}> </Text>
+        <SafeAreaView>
+            <ScrollView >
+                <View style={styles.MainContainer}>
+                    <Icon name="cards-outline" size={200} color="orange"/>
+                    <Text style={{fontSize: 50, color: "orange"}}> </Text>
+                    <Text style={{fontSize: 10, color: "orange"}}> </Text>
+                    <Text style={{fontSize: 30, color: "orange"}}>Select Deck:</Text>
+                    <Text style={{fontSize: 10, color: "orange"}}> </Text>
 
-            {deckTitles.map((thisTitle) => (
-                cardButton(thisTitle)
-            ))}
-            <Text style={{fontSize: 50, color: "orange"}}> </Text>
-            <Icon.Button style={styles.newDeckBtnContainer}
-                         backgroundColor="orange"
-                         onPress={() => navigation.navigate('NewDeck')}>
-                Add New Deck
-            </Icon.Button>
-
-        </View>
+                    {deckTitles.map((thisTitle) => (
+                        cardButton(thisTitle)
+                    ))}
+                    <Text style={{fontSize: 50, color: "orange"}}> </Text>
+                    <Icon.Button style={styles.newDeckBtnContainer}
+                                 backgroundColor="orange"
+                                 onPress={() => navigation.navigate('NewDeck')}>
+                        Add New Deck
+                    </Icon.Button>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
-//}
 }
 
 export default DeckList;
@@ -99,5 +100,5 @@ const styles = StyleSheet.create({
         color: "orange",
         fontSize: 70,
         width: 210,
-}
+    },
 });
